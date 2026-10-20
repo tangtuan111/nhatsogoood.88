@@ -1,0 +1,1376 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GAMESHOW ĐI TÌM NHÀ VUA - BẢO TỒN RỪNG NGẬP MẶN CẦN GIỜ</title>
+    <style>
+        :root {
+            --bg-dark: #031813;
+            --bg-card: #09352a;
+            --neon-green: #00e676;
+            --neon-cyan: #00e5ff;
+            --gold: #ffd700;
+            --gold-orange: #ff9100;
+            --danger: #ff3d00;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: radial-gradient(circle at 50% 0%, #14614d 0%, #05261e 60%, #02100d 100%);
+            color: #ffffff;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ================= THANH ĐIỀU HƯỚNG CỐ ĐỊNH TRÊN CÙNG ================= */
+        .top-navbar {
+            height: 60px;
+            background: #02130f;
+            border-bottom: 2px solid var(--gold);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 18px;
+            z-index: 999;
+            flex-shrink: 0;
+        }
+
+        .stage-tabs {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background: #0a362b;
+            color: #b9f6ca;
+            border: 1px solid var(--neon-green);
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.86rem;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .tab-btn:hover {
+            background: #145e4b;
+            color: #ffffff;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--gold), var(--gold-orange));
+            color: #000000;
+            border-color: #ffffff;
+            font-weight: 900;
+            box-shadow: 0 0 14px rgba(255, 215, 0, 0.65);
+        }
+
+        .utility-btns {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .action-chip {
+            background: #0d4a3b;
+            color: #ffffff;
+            border: 1px solid var(--gold);
+            padding: 7px 13px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+
+        .action-chip:hover {
+            background: var(--gold);
+            color: #000000;
+        }
+
+        .chip-timer {
+            background: linear-gradient(135deg, #ff6d00, #d50000);
+            border-color: #ffffff;
+        }
+
+        /* ================= KHU VỰC SÂN KHẤU CHÍNH ================= */
+        .main-stage {
+            flex: 1;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 30px;
+            overflow-y: auto;
+        }
+
+        .screen {
+            display: none;
+            width: 100%;
+            max-width: 1360px;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        /* ================= MÀN HÌNH 0: POSTER MỞ MÀN ================= */
+        .hero-poster {
+            width: 100%;
+            background: linear-gradient(160deg, #0f5240 0%, #041d17 100%);
+            border: 3px solid var(--gold);
+            border-radius: 26px;
+            padding: 40px 48px;
+            text-align: center;
+            box-shadow: 0 14px 45px rgba(0, 0, 0, 0.7);
+        }
+
+        .hero-crown {
+            font-size: 4.5rem;
+            margin-bottom: 8px;
+        }
+
+        .sub-pill {
+            display: inline-block;
+            background: rgba(0, 230, 118, 0.18);
+            border: 1.5px solid var(--neon-green);
+            color: var(--neon-green);
+            padding: 6px 22px;
+            border-radius: 50px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            font-size: 0.92rem;
+            margin-bottom: 14px;
+            text-transform: uppercase;
+        }
+
+        .title-3d {
+            font-size: 4.6rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            color: var(--gold);
+            text-shadow: 0 4px 0 #b26a00, 0 10px 25px rgba(0,0,0,0.85);
+            letter-spacing: 3px;
+            margin-bottom: 12px;
+        }
+
+        .poster-desc {
+            font-size: 1.32rem;
+            color: #e0f2f1;
+            margin-bottom: 26px;
+            font-weight: 600;
+            max-width: 920px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.5;
+        }
+
+        .poster-badges {
+            display: flex;
+            justify-content: center;
+            gap: 18px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .p-badge {
+            background: rgba(0, 0, 0, 0.45);
+            border: 1.5px solid var(--gold);
+            padding: 11px 22px;
+            border-radius: 14px;
+            font-weight: 800;
+            font-size: 1rem;
+            color: #fffde7;
+        }
+
+        .btn-big-start {
+            background: linear-gradient(90deg, var(--gold), var(--gold-orange));
+            color: #000000;
+            font-weight: 900;
+            font-size: 1.2rem;
+            padding: 15px 42px;
+            border-radius: 50px;
+            border: 2px solid #ffffff;
+            cursor: pointer;
+            box-shadow: 0 4px 25px rgba(255, 215, 0, 0.55);
+        }
+
+        /* ================= MÀN HÌNH CÂU HỎI 3 VÒNG ================= */
+        .round-arena {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .question-selector-bar {
+            display: flex;
+            flex-direction: column;
+            background: #031914;
+            border: 2px solid var(--gold);
+            border-radius: 14px;
+            padding: 8px 16px;
+            gap: 7px;
+        }
+
+        .bar-top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .round-title-tag {
+            font-size: 1.1rem;
+            font-weight: 900;
+            color: var(--gold);
+            text-transform: uppercase;
+        }
+
+        .q-pills {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 6px;
+        }
+
+        .q-pill-btn {
+            background: #0b3d30;
+            color: #ffffff;
+            border: 1.5px solid var(--neon-green);
+            padding: 6px 4px;
+            border-radius: 7px;
+            font-weight: 800;
+            font-size: 0.8rem;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .q-pill-btn.en-pill {
+            border-color: var(--neon-cyan);
+            color: #e0f7fa;
+        }
+
+        .q-pill-btn:hover {
+            background: #166953;
+        }
+
+        .q-pill-btn.active {
+            background: var(--gold) !important;
+            color: #000000 !important;
+            border-color: #ffffff !important;
+            font-weight: 900;
+        }
+
+        .q-pill-btn.done {
+            opacity: 0.65;
+            background: #1b4d3e;
+            color: var(--gold);
+        }
+
+        .q-box-main {
+            background: linear-gradient(180deg, #0b4436 0%, #05231b 100%);
+            border: 2.5px solid var(--gold);
+            border-radius: 16px;
+            padding: 16px 24px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+        }
+
+        .q-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .q-badge-type {
+            background: rgba(0, 229, 255, 0.18);
+            border: 1px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+            padding: 3px 12px;
+            border-radius: 30px;
+            font-size: 0.82rem;
+            font-weight: 800;
+        }
+
+        .q-text {
+            font-size: 1.28rem;
+            font-weight: 700;
+            line-height: 1.4;
+            color: #ffffff;
+        }
+
+        .q-text .kw {
+            color: var(--gold);
+            font-weight: 800;
+            text-decoration: underline;
+        }
+
+        /* Thanh Từ Vựng Tiếng Anh (Chỉ hiện ở Câu 7-10) */
+        .vocab-strip {
+            margin-top: 10px;
+            background: rgba(0, 229, 255, 0.12);
+            border-left: 4px solid var(--neon-cyan);
+            padding: 7px 14px;
+            border-radius: 8px;
+            font-size: 0.92rem;
+            color: #e0f7fa;
+            line-height: 1.35;
+        }
+
+        .vocab-strip b {
+            color: var(--gold);
+        }
+
+        .ans-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .ans-card {
+            background: #0a3d30;
+            border: 2px solid var(--gold);
+            border-radius: 13px;
+            padding: 13px 16px;
+            color: #ffffff;
+            font-size: 1.04rem;
+            font-weight: 600;
+            text-align: left;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            line-height: 1.35;
+        }
+
+        .ans-card:hover {
+            background: #145e4b;
+            border-color: #ffffff;
+        }
+
+        .ans-char {
+            min-width: 38px;
+            height: 38px;
+            border-radius: 8px;
+            background: var(--gold);
+            color: #000000;
+            font-weight: 900;
+            font-size: 1.15rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .ans-card.correct {
+            background: #00a843 !important;
+            border-color: #ffffff !important;
+            box-shadow: 0 0 18px rgba(0, 230, 118, 0.85);
+        }
+
+        .ans-card.wrong {
+            background: #b71c1c !important;
+            border-color: #ff8a80 !important;
+            opacity: 0.78;
+        }
+
+        /* Hộp Giải thích khi chọn SAI (Phản biện thuyết phục) */
+        .wrong-feedback-bar {
+            display: none;
+            background: rgba(183, 28, 28, 0.92);
+            border: 2px solid #ff8a80;
+            border-radius: 12px;
+            padding: 10px 18px;
+            color: #ffffff;
+            font-size: 0.98rem;
+            line-height: 1.4;
+        }
+
+        .wrong-feedback-bar.show {
+            display: block;
+        }
+
+        /* Hộp Giải thích khi chọn ĐÚNG & Nút Chuyển Vòng */
+        .explain-bar {
+            display: none;
+            background: #062b22;
+            border: 2px solid var(--neon-green);
+            border-radius: 12px;
+            padding: 11px 18px;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+        }
+
+        .explain-bar.show {
+            display: flex;
+        }
+
+        .explain-text {
+            font-size: 0.98rem;
+            line-height: 1.4;
+            color: #fffde7;
+        }
+
+        .explain-actions {
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .btn-next-q {
+            background: #0f4c3c;
+            color: #ffffff;
+            border: 1.5px solid var(--gold);
+            padding: 9px 13px;
+            border-radius: 8px;
+            font-weight: 800;
+            cursor: pointer;
+            font-size: 0.86rem;
+        }
+        .btn-next-q:hover { background: var(--gold); color: #000000; }
+
+        .btn-next-stage {
+            background: linear-gradient(135deg, var(--gold), var(--gold-orange));
+            color: #000000;
+            border: 2px solid #ffffff;
+            padding: 9px 15px;
+            border-radius: 8px;
+            font-weight: 900;
+            cursor: pointer;
+            font-size: 0.86rem;
+        }
+
+        /* ================= MÀN HÌNH TỔNG KẾT & TUYÊN TRUYỀN ================= */
+        .climax-container {
+            width: 100%;
+            background: var(--bg-card);
+            border: 3px solid var(--gold);
+            border-radius: 24px;
+            padding: 26px 36px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .climax-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 16px;
+        }
+
+        .msg-card {
+            background: rgba(0, 0, 0, 0.42);
+            border: 1.5px solid var(--neon-green);
+            border-radius: 16px;
+            padding: 16px 18px;
+        }
+
+        .msg-card h4 {
+            color: var(--gold);
+            font-size: 1.12rem;
+            margin-bottom: 8px;
+        }
+
+        .msg-card p {
+            font-size: 0.96rem;
+            line-height: 1.5;
+            color: #e0f2f1;
+        }
+
+        .call-to-action-box {
+            background: rgba(0, 230, 118, 0.15);
+            border: 2px dashed var(--gold);
+            border-radius: 16px;
+            padding: 16px 22px;
+            text-align: center;
+        }
+
+        /* Đồng hồ đếm ngược */
+        #timer-bubble {
+            display: none;
+            position: fixed;
+            top: 70px;
+            right: 26px;
+            width: 92px;
+            height: 92px;
+            border-radius: 50%;
+            background: #d50000;
+            border: 4px solid var(--gold);
+            color: #ffffff;
+            font-size: 2.8rem;
+            font-weight: 900;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.75);
+        }
+    </style>
+</head>
+<body>
+
+<div id="timer-bubble">10</div>
+
+<!-- THANH MENU CỐ ĐỊNH TRÊN CÙNG -->
+<div class="top-navbar">
+    <div class="stage-tabs">
+        <button type="button" class="tab-btn active" onclick="goToStage(0)">🎬 1. POSTER MỞ MÀN</button>
+        <button type="button" class="tab-btn" onclick="goToStage(1)">🟢 2. VÒNG LOẠI (10 Câu)</button>
+        <button type="button" class="tab-btn" onclick="goToStage(2)">🟡 3. BÁN KẾT (10 Câu)</button>
+        <button type="button" class="tab-btn" onclick="goToStage(3)">🔴 4. CHUNG KẾT (10 Câu)</button>
+        <button type="button" class="tab-btn" onclick="goToStage(4)">🌱 5. TỔNG KẾT & TUYÊN TRUYỀN</button>
+    </div>
+    <div class="utility-btns">
+        <button type="button" class="action-chip chip-timer" onclick="triggerTimer(10)">⏱️ ĐẾM 10S</button>
+        <button type="button" class="action-chip chip-timer" onclick="triggerTimer(5)">⏱️ ĐẾM 5S</button>
+        <button type="button" class="action-chip" onclick="soundWhistle()">📢 CÒI BẮT ĐẦU</button>
+        <button type="button" class="action-chip" onclick="goFullScreen()">⛶ FULLSCREEN</button>
+    </div>
+</div>
+
+<div class="main-stage">
+
+    <!-- MÀN HÌNH 0: POSTER MỞ MÀN -->
+    <div class="screen active" id="stage-0">
+        <div class="hero-poster">
+            <div class="hero-crown">👑🌿👑</div>
+            <div class="sub-pill">HÀNH TRÌNH GIÁO DỤC BẢO TỒN RỪNG NGẬP MẶN CẦN GIỜ</div>
+            <h1 class="title-3d">ĐI TÌM NHÀ VUA</h1>
+            <p class="poster-desc">
+                "Hơi Thở Cần Giờ Giữa Nhịp Đập Thành Phố" — Đấu trường tri thức sinh thái, tư duy phản biện và sứ mệnh hành động vì Khu Dự trữ Sinh quyển Thế giới.
+            </p>
+            <div class="poster-badges">
+                <div class="p-badge">🟢 VÒNG 1: THẤU HIỂU HỆ SINH THÁI</div>
+                <div class="p-badge">🟡 VÒNG 2: PHÂN TÍCH THỰC TRẠNG</div>
+                <div class="p-badge">🔴 VÒNG 3: TƯ DUY BẢO TỒN BỀN VỮNG</div>
+            </div>
+            <button type="button" class="btn-big-start" onclick="goToStage(1)">
+                BẮT ĐẦU BƯỚC VÀO VÒNG LOẠI ➔
+            </button>
+        </div>
+    </div>
+
+    <!-- MÀN HÌNH 1, 2, 3: 3 VÒNG ĐẤU -->
+    <div class="screen" id="stage-1"><div class="round-arena" id="arena-round-0"></div></div>
+    <div class="screen" id="stage-2"><div class="round-arena" id="arena-round-1"></div></div>
+    <div class="screen" id="stage-3"><div class="round-arena" id="arena-round-2"></div></div>
+
+    <!-- MÀN HÌNH 4: TỔNG KẾT & TUYÊN TRUYỀN -->
+    <div class="screen" id="stage-4">
+        <div class="climax-container">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+                <div>
+                    <span class="sub-pill" style="margin:0 0 6px 0;">THÔNG ĐIỆP CỐT LÕI SAU TRÒ CHƠI</span>
+                    <h2 style="font-size:1.95rem; color:var(--gold);">
+                        👑 AI MỚI THỰC SỰ LÀ "NHÀ VUA" CỦA RỪNG XANH CẦN GIỜ?
+                    </h2>
+                </div>
+                <button type="button" class="btn-next-stage" onclick="soundVictory()">🎉 NHẠC VINH DANH</button>
+            </div>
+            <div class="climax-grid">
+                <div class="msg-card">
+                    <h4>1. 🌿 Cần Giờ là "Vị Vua Hộ Mệnh"</h4>
+                    <p>Chính <b>hệ sinh thái Rừng ngập mặn Cần Giờ</b> mới là "Vị Vua" thầm lặng đang ngày đêm che chở cho TP.HCM khỏi bão dữ, triều cường, xâm nhập mặn và khóa chặt hàng triệu tấn <b>Carbon Xanh</b> dưới lớp bùn sâu.</p>
+                </div>
+                <div class="msg-card">
+                    <h4>2. 🛡️ Mối liên kết giữa Phố và Rừng</h4>
+                    <p>Mọi hành vi của chúng ta nơi phố thị đều tác động trực tiếp đến Cần Giờ. Một chiếc túi nilon bị vứt xuống kênh rạch nội đô sẽ trôi về cửa biển làm ngạt thở hệ rễ đước; một hành động du lịch thiếu ý thức sẽ làm tổn thương đời sống hoang dã.</p>
+                </div>
+                <div class="msg-card">
+                    <h4>3. 🔥 Sứ mệnh của "Vua Rừng Xanh"</h4>
+                    <p>Danh hiệu <b>"Nhà Vua"</b> hôm nay không dừng lại ở việc trả lời đúng câu hỏi trên lớp, mà thuộc về những sinh viên biết biến sự thấu hiểu thành <b>hành động bảo tồn thực tế</b>: Giảm rác nhựa, tôn trọng tự nhiên và lan tỏa ý thức bảo vệ rừng!</p>
+                </div>
+            </div>
+            <div class="call-to-action-box">
+                <h3 style="color:var(--neon-green); font-size:1.35rem; margin-bottom:6px;">
+                    🌱 CHUYỂN TIẾP HOẠT ĐỘNG TIẾP THEO: LAN TỎA CAM KẾT BẢO TỒN CẦN GIỜ
+                </h3>
+                <p style="font-size:1.04rem; color:#ffffff;">
+                    Từ những kiến thức vừa chinh phục được, mỗi thành viên và đội chơi hãy biến nhận thức thành hành động cụ thể ngay hôm nay để giữ mãi màu xanh cho <b>#RexanhCanGio</b>!
+                </p>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // Âm thanh an toàn
+    let audioCtx = null;
+    function getAudioCtx() {
+        try {
+            if (!audioCtx) {
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                if (AudioContextClass) audioCtx = new AudioContextClass();
+            }
+            if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+        } catch (e) {}
+        return audioCtx;
+    }
+
+    function playSynth(freq, type, dur, delay) {
+        setTimeout(function() {
+            try {
+                const ctx = getAudioCtx();
+                if (!ctx) return;
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, ctx.currentTime);
+                gain.gain.setValueAtTime(0.2, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + dur);
+            } catch (e) {}
+        }, delay || 0);
+    }
+
+    function soundClick() { playSynth(600, 'sine', 0.07, 0); }
+    function soundWhistle() { playSynth(880, 'square', 0.14, 0); playSynth(1174, 'square', 0.3, 130); }
+    function soundCorrect() { playSynth(523.25, 'sine', 0.14, 0); playSynth(659.25, 'sine', 0.14, 110); playSynth(783.99, 'sine', 0.14, 220); playSynth(1046.5, 'triangle', 0.4, 330); }
+    function soundWrong() { playSynth(185, 'sawtooth', 0.2, 0); playSynth(140, 'sawtooth', 0.35, 180); }
+    function soundVictory() { [523, 659, 784, 1046, 784, 1046].forEach(function(f, i) { playSynth(f, 'triangle', 0.25, i * 150); }); }
+
+    // NGÂN HÀNG 30 CÂU HỎI KÈM GIẢI THÍCH KHI CHỌN SAI & VOCABULARY TIẾNG ANH
+    const roundsDatabase = [
+        // VÒNG 1
+        {
+            roundName: "🟢 VÒNG LOẠI: THẤU HIỂU HỆ SINH THÁI RỪNG NGẬP MẶN CẦN GIỜ",
+            nextStageIdx: 2,
+            nextStageLabel: "CHUYỂN SANG VÒNG BÁN KẾT ➔",
+            questions: [
+                {
+                    label: "Câu 1 (VN)", isEn: false, badge: "Cơ chế Thích nghi Sinh học",
+                    q: "Cơ chế <span class='kw'>'Đài sinh' (Vivipary)</span> ở cây Đước đôi tại Rừng ngập mặn Cần Giờ mang lại ưu thế sinh tồn quyết định nào cho cây con?",
+                    opts: [
+                        "Hạt rụng xuống lớp bùn khô rồi nằm ngủ nghỉ chờ đến mùa mưa năm sau mới nảy mầm.",
+                        "Cây con phát triển ngay trên cây mẹ để tích lũy dưỡng chất và tập thích nghi mặn sớm.",
+                        "Hệ rễ cây tự động tách khỏi thân chính để trôi nổi khắp mặt biển tìm vùng đất mới.",
+                        "Lá cây biến đổi thành túi chứa nước ngọt giúp hạt giống phát tán đi xa nhờ gió biển."
+                    ],
+                    ans: 1,
+                    wrongWhy: [
+                        "❌ SAI (A): Bùn Cần Giờ ngập mặn hàng ngày, nếu hạt rơi xuống nằm chờ sẽ bị muối làm thối phôi ngay!",
+                        "",
+                        "❌ SAI (C): Rễ chống của cây Đước bám cố định giữ đất chứ không bao giờ tự tách rời để trôi nổi!",
+                        "❌ SAI (D): Trụ mầm cây Đước phát tán nhờ dòng nước thủy triều chứ không bay nhờ gió và lá không biến thành túi nước!"
+                    ],
+                    explain: "✅ ĐÁP ÁN B: Nhờ nảy mầm thành trụ mầm ngay trên cây mẹ, cây đước con tích đủ dinh dưỡng, tập chịu mặn và cắm rễ ngay khi rơi xuống bùn!"
+                },
+                {
+                    label: "Câu 2 (VN)", isEn: false, badge: "Hệ Rễ Ngập Mặn",
+                    q: "Vì sao các loài cây Bần, cây Mắm tại Cần Giờ phải tiến hóa hệ thống <span class='kw'>rễ thở mọc ngược</span> từ dưới lòng đất nhô thẳng lên mặt bùn?",
+                    opts: [
+                        "Để thu nhận ánh sáng mặt trời trực tiếp phục vụ quá trình quang hợp dưới tán rừng.",
+                        "Để phóng thích lượng muối khoáng dư thừa từ dưới lòng đất ra dòng nước thủy triều.",
+                        "Để trao đổi khí oxy trực tiếp với không khí do lớp đất bùn ngập mặn bị thiếu hụt oxy.",
+                        "Để tạo thành hàng rào gai nhọn ngăn chặn các loài động vật ăn cỏ xâm nhập vào rừng."
+                    ],
+                    ans: 2,
+                    wrongWhy: [
+                        "❌ SAI (A): Quang hợp là chức năng của bộ lá xanh trên tán, còn rễ nhô lên là để hô hấp lấy khí Oxy!",
+                        "❌ SAI (B): Cây ngập mặn thải muối qua tuyến muối ở lá hoặc rụng lá già, không thải muối qua rễ thở!",
+                        "",
+                        "❌ SAI (D): Rễ thở mềm và xốp chứa mô thông khí chứ không phải gai nhọn tự vệ cơ học!"
+                    ],
+                    explain: "✅ ĐÁP ÁN C: Đất bùn ngập nước liên tục ở Cần Giờ ở trạng thái yếm khí (cạn kiệt oxy), nên rễ cây phải mọc ngược lên không khí để thở!"
+                },
+                {
+                    label: "Câu 3 (VN)", isEn: false, badge: "Sinh vật Chỉ thị",
+                    q: "Sự suy giảm đột ngột của quần thể <span class='kw'>Cá Thòi Lòi</span> tại các bãi bồi ven sông Cần Giờ là tiếng chuông cảnh báo trực tiếp về nguy cơ nào?",
+                    opts: [
+                        "Bãi bùn ngập mặn đang bị ô nhiễm váng dầu, hóa chất hoặc mất cân bằng sinh thái.",
+                        "Độ mặn của nước biển giảm nhẹ do lượng mưa theo mùa tăng cao hơn mức trung bình.",
+                        "Các loài chim di cư đã chuyển toàn bộ khu vực làm tổ sang vùng rừng tràm lân cận.",
+                        "Tán rừng ngập mặn phát triển quá dày đặc khiến ánh nắng không chiếu tới mặt bùn."
+                    ],
+                    ans: 0,
+                    wrongWhy: [
+                        "",
+                        "❌ SAI (B): Cá Thòi Lòi là loài rộng muối, thích nghi rất tốt với sự thay đổi độ mặn theo mùa mưa nắng!",
+                        "❌ SAI (C): Chim di cư chuyển tổ không làm suy giảm đột ngột quần thể Cá Thòi Lòi sống dưới bãi bùn!",
+                        "❌ SAI (D): Rừng ngập mặn càng rậm rạp khỏe mạnh thì Cá Thòi Lòi càng có nhiều thức ăn và hang trú ẩn!"
+                    ],
+                    explain: "✅ ĐÁP ÁN A: Cá Thòi Lòi thở qua lớp da ẩm nên cực kỳ nhạy cảm với váng dầu và hóa chất; chúng biến mất nghĩa là bãi bùn đang bị đầu độc!"
+                },
+                {
+                    label: "Câu 4 (VN)", isEn: false, badge: "Tác hại Rác thải Nhựa",
+                    q: "Tác động cơ học nguy hiểm nhất khi túi nilon và lưới đánh cá trôi dạt quấn chặt vào <span class='kw'>hệ rễ cây ngập mặn</span> tại Cần Giờ là gì?",
+                    opts: [
+                        "Làm tăng nhanh tốc độ bồi tụ phù sa khiến gốc cây rừng bị vùi lấp sâu hoàn toàn.",
+                        "Gây bít tắc các lỗ vỏ trao đổi khí trên rễ thở khiến cây bị ngạt và chết dần.",
+                        "Làm thay đổi hoàn toàn hướng chảy của dòng thủy triều tại các kênh rạch tự nhiên.",
+                        "Thu hút quá nhiều loài cua còng đến trú ẩn làm xói mòn lớp đất bùn quanh gốc cây."
+                    ],
+                    ans: 1,
+                    wrongWhy: [
+                        "❌ SAI (A): Túi nilon cản trở phù sa lắng đọng tự nhiên chứ không giúp bồi tụ đất tốt!",
+                        "",
+                        "❌ SAI (C): Rác nhựa bám ở rễ không làm đổi hướng thủy triều nhưng trực tiếp bóp nghẹt từng gốc cây!",
+                        "❌ SAI (D): Túi nilon phủ kín mặt bùn làm bít miệng hang khiến cua, còng chết ngạt chứ không thu hút chúng!"
+                    ],
+                    explain: "✅ ĐÁP ÁN B: Trên rễ cây ngập mặn có hàng ngàn lỗ vỏ (lenticels) để thở; túi nilon quấn chặt sẽ làm cây ngạt thở cơ học và chết rụi!"
+                },
+                {
+                    label: "Câu 5 (VN)", isEn: false, badge: "Lịch sử Phục hồi Rừng",
+                    q: "Bài học bảo tồn lớn nhất rút ra từ kỳ tích <span class='kw'>phục hồi Rừng ngập mặn Cần Giờ</span> sau khi bị chất độc hóa học tàn phá trong chiến tranh là gì?",
+                    opts: [
+                        "Rừng ngập mặn có thể tự tái sinh hoàn toàn chỉ sau vài năm mà không cần trồng mới.",
+                        "Việc nhập khẩu các loài cây ngoại lai sinh trưởng nhanh là giải pháp duy nhất cứu rừng.",
+                        "Phục hồi đúng loài cây bản địa kết hợp sự kiên trì của cộng đồng sẽ hồi sinh thiên nhiên.",
+                        "Chỉ cần đắp đê bê tông ngăn mặn toàn bộ cửa biển là rừng tự nhiên sẽ mọc lại xanh tốt."
+                    ],
+                    ans: 2,
+                    wrongWhy: [
+                        "❌ SAI (A): Sau chiến tranh nguồn giống tại chỗ bị hủy diệt nặng nề, nếu con người không trồng lại từ năm 1978 thì đất đã bị xói lở hết!",
+                        "❌ SAI (B): Cây ngoại lai không hợp bùn mặn Cần Giờ và dễ gây xâm hại; Cần Giờ hồi sinh nhờ trồng cây Đước đôi bản địa!",
+                        "",
+                        "❌ SAI (D): Rừng ngập mặn bắt buộc phải có nước mặn thủy triều mới sống được; đắp đê ngăn mặn hoàn toàn sẽ giết chết rừng!"
+                    ],
+                    explain: "✅ ĐÁP ÁN C: Cần Giờ là kỳ tích thế giới chứng minh con người có thể chữa lành thiên nhiên khi chọn đúng cây bản địa và bền bỉ giữ rừng!"
+                },
+                {
+                    label: "Câu 6 (VN)", isEn: false, badge: "Chức năng Phòng hộ",
+                    q: "Cấu trúc quần thể cây Đước, Bần, Mắm tại Cần Giờ phát huy cơ chế vật lý nào khi <span class='kw'>bão lớn và triều cường</span> tấn công bờ biển TP.HCM?",
+                    opts: [
+                        "Làm tăng tốc độ gió biển thổi vào đất liền để giải nhiệt nhanh cho khu vực nội thành.",
+                        "Chuyển hướng toàn bộ dòng chảy của cơn bão sang các tỉnh thuộc vùng Đông Nam Bộ.",
+                        "Hấp thụ toàn bộ lượng nước mưa của cơn bão vào bên trong thân và lá cây ngập mặn.",
+                        "Ma sát của tán rừng và hệ rễ dày đặc giúp triệt tiêu phần lớn năng lượng sóng và gió."
+                    ],
+                    ans: 3,
+                    wrongWhy: [
+                        "❌ SAI (A): Tán rừng dày đặc cản gió để giảm sức tàn phá của bão chứ không bao giờ làm tăng tốc độ gió!",
+                        "❌ SAI (B): Rừng cây không thể bẻ lái quỹ đạo khí áp của bão sang tỉnh khác mà làm suy yếu sóng và gió khi bão đổ bộ!",
+                        "❌ SAI (C): Thân cây không thể hút hết nước mưa của cả cơn bão!",
+                        ""
+                    ],
+                    explain: "✅ ĐÁP ÁN D: Hệ rễ chằng chịt và tán rừng dày tạo lực cản ma sát cực lớn, giúp triệt tiêu từ 50%–90% năng lượng sóng biển và gió bão!"
+                },
+                {
+                    label: "Câu 7 (EN)", isEn: true, badge: "English | Blue Carbon Sink",
+                    vocab: "🔑 <b>Keywords:</b> <b>Blue Carbon sink</b> (Bể chứa Carbon xanh) | <b>Waterlogged anaerobic mud</b> (Bùn ngập nước thiếu oxy) | <b>Decomposition</b> (Sự phân hủy).",
+                    q: "Why is Can Gio Mangrove Forest considered a much more effective <span class='kw'>'Blue Carbon' sink</span> than terrestrial tropical rainforests?",
+                    opts: [
+                        "Mangrove leaves grow three times larger and absorb sunlight throughout the entire night.",
+                        "Waterlogged anaerobic mud slows down decomposition, locking carbon underground for centuries.",
+                        "Ocean waves constantly wash away carbon dioxide from the tree trunks into deep trenches.",
+                        "Saltwater chemically reacts with tree bark to transform carbon into solid limestone rocks."
+                    ],
+                    ans: 1,
+                    wrongWhy: [
+                        "❌ SAI (A): Cây không quang hợp vào ban đêm khi không có ánh sáng mặt trời!",
+                        "",
+                        "❌ SAI (C): Sóng biển không rửa trôi khí CO2 từ thân cây xuống rãnh đại dương!",
+                        "❌ SAI (D): Nước mặn không phản ứng với vỏ cây biến thành đá vôi ngay lập tức!"
+                    ],
+                    explain: "✅ ĐÁP ÁN B: Do lớp bùn ngập nước thiếu oxy (anaerobic), lá và rễ mục phân hủy cực chậm, giúp Cần Giờ khóa chặt Carbon gấp 3–5 lần rừng trên cạn!"
+                },
+                {
+                    label: "Câu 8 (EN)", isEn: true, badge: "English | Marine Nursery",
+                    vocab: "🔑 <b>Keywords:</b> <b>Dense root network</b> (Mạng lưới rễ dày đặc) | <b>Nursery ground</b> (Vườn ươm sinh sản) | <b>Juvenile fish/shrimp</b> (Tôm, cá non).",
+                    q: "What vital ecological role does the dense root network of Can Gio play for <span class='kw'>marine biodiversity</span> in the East Sea?",
+                    opts: [
+                        "It serves as a safe nursery and feeding ground for juvenile fish, shrimp, and crabs.",
+                        "It blocks all marine species from entering the river system during high tide seasons.",
+                        "It warms up the coastal water to help deep-sea corals grow inside the muddy channels.",
+                        "It filters out all natural plankton so that large ocean predators can hunt more easily."
+                    ],
+                    ans: 0,
+                    wrongWhy: [
+                        "",
+                        "❌ SAI (B): Rễ đước không chặn sinh vật biển mà ngược lại, mở lối cho tôm cá vào trú ẩn theo thủy triều!",
+                        "❌ SAI (C): San hô nước sâu cần nước trong suốt chứ không sống được trong kênh bùn đục của rừng ngập mặn!",
+                        "❌ SAI (D): Bộ rễ đước chính là nơi ngăn cá dữ lớn bơi vào để bảo vệ cá con chứ không giúp cá dữ săn mồi!"
+                    ],
+                    explain: "✅ ĐÁP ÁN A: Bộ rễ đước chằng chịt là 'vườn ươm' che chở và cung cấp mùn hữu cơ cho ấu trùng tôm, cá, cua trước khi ra biển lớn!"
+                },
+                {
+                    label: "Câu 9 (EN)", isEn: true, badge: "English | Bio-Filtration",
+                    vocab: "🔑 <b>Keywords:</b> <b>Kidneys of the Coast</b> (Quả thận ven biển) | <b>Trap suspended sediments</b> (Giữ trầm tích lơ lửng) | <b>Immobilize heavy metals</b> (Cố định kim loại nặng).",
+                    q: "Why do environmental scientists often refer to Can Gio's mangrove wetlands as <span class='kw'>'The Kidneys of the Coast'</span>?",
+                    opts: [
+                        "They release chlorine compounds into the estuary to sterilize polluted river water.",
+                        "They evaporate polluted river water into the clouds before it reaches the ocean.",
+                        "They trap suspended sediments, absorb excess nutrients, and immobilize heavy metals.",
+                        "They push industrial wastewater back upstream toward the inner city drainage canals."
+                    ],
+                    ans: 2,
+                    wrongWhy: [
+                        "❌ SAI (A): Cây ngập mặn lọc nước bằng sinh học và cơ học chứ không tiết ra chất tẩy Clo!",
+                        "❌ SAI (B): Cây thoát hơi nước tinh khiết qua lá chứ không làm bay hơi chất ô nhiễm!",
+                        "",
+                        "❌ SAI (D): Rừng cây không thể đẩy ngược dòng nước thải chảy ngược lên thượng nguồn!"
+                    ],
+                    explain: "✅ ĐÁP ÁN C: Hệ rễ làm chậm dòng chảy để bùn bẩn lắng xuống, hấp thụ chất dinh dưỡng thừa và giữ chặt kim loại nặng trong bùn!"
+                },
+                {
+                    label: "Câu 10 (EN)", isEn: true, badge: "English | Biosphere Zoning",
+                    vocab: "🔑 <b>Keywords:</b> <b>Biosphere Reserve</b> (Khu Dự trữ Sinh quyển) | <b>Core Zone</b> (Vùng lõi bảo tồn nghiêm ngặt) | <b>Genetic resources</b> (Nguồn gen).",
+                    q: "Within the three functional zones of Can Gio Biosphere Reserve, what is the primary mandate of the <span class='kw'>Core Zone (Vùng lõi)</span>?",
+                    opts: [
+                        "Developing high-density coastal urban projects and commercial shipping ports for the city.",
+                        "Expanding intensive industrial shrimp farming ponds to boost local export revenues.",
+                        "Hosting large-scale music festivals and motorized water sports for weekend tourists.",
+                        "Strictly preserving natural ecosystems, genetic resources, and wildlife without disturbance."
+                    ],
+                    ans: 3,
+                    wrongWhy: [
+                        "❌ SAI (A): Xây dựng đô thị và cảng thương mại bị cấm tuyệt đối trong Vùng lõi bảo tồn nghiêm ngặt!",
+                        "❌ SAI (B): Đầm tôm công nghiệp thâm canh sẽ phá hủy cấu trúc tự nhiên của Vùng lõi!",
+                        "❌ SAI (C): Lễ hội ồn ào và mô-tô nước làm xáo trộn nghiêm trọng đời sống động vật hoang dã ở Vùng lõi!",
+                        ""
+                    ],
+                    explain: "✅ ĐÁP ÁN D: Theo chuẩn UNESCO, Vùng lõi là khu vực bất khả xâm phạm nhằm bảo tồn nguyên vẹn hệ sinh thái và nguồn gen tự nhiên!"
+                }
+            ]
+        },
+
+        // VÒNG 2
+        {
+            roundName: "🟡 VÒNG BÁN KẾT: PHÂN TÍCH THỰC TRẠNG & MỐI ĐE DỌA BẢO TỒN",
+            nextStageIdx: 3,
+            nextStageLabel: "TIẾN VÀO VÒNG CHUNG KẾT ➔",
+            questions: [
+                {
+                    label: "Câu 1 (VN)", isEn: false, badge: "Xung đột Khai thác & Bảo tồn",
+                    q: "Nguyên nhân sinh thái sâu xa nào khiến việc <span class='kw'>phá rừng ngập mặn để lập đầm nuôi tôm công nghiệp</span> mật độ cao thường dẫn đến thất bại nặng nề?",
+                    opts: [
+                        "Tôm nuôi công nghiệp hoàn toàn không thể sống được trong môi trường nước lợ ven biển.",
+                        "Mất rừng làm đất bị phèn hóa, mất bộ lọc tự nhiên và bùng phát dịch bệnh hàng loạt.",
+                        "Nguồn nước biển tại khu vực cửa sông quá giàu oxy khiến tôm nuôi bị sốc nhiệt.",
+                        "Chi phí thu hoạch tôm trong đầm nhân tạo cao gấp mười lần so với đánh bắt xa bờ."
+                    ],
+                    ans: 1,
+                    wrongWhy: [
+                        "❌ SAI (A): Tôm sú và tôm thẻ vốn sinh trưởng rất tốt trong môi trường nước lợ cửa sông!",
+                        "",
+                        "❌ SAI (C): Nước giàu oxy rất tốt cho thủy sản chứ không gây sốc nhiệt làm chết tôm!",
+                        "❌ SAI (D): Thất bại là do suy thoái môi trường đất và nước chứ không phải do chi phí lưới thu hoạch!"
+                    ],
+                    explain: "✅ ĐÁP ÁN B: Chặt rừng đào đầm làm lớp đất chứa Pyrit sắt bị phơi ra oxy hóa gây chua phèn cực mạnh và mất bộ lọc tự nhiên!"
+                },
+                {
+                    label: "Câu 2 (VN)", isEn: false, badge: "Hệ lụy Du lịch Thiếu ý thức",
+                    q: "Vì sao hành vi du khách tự ý ném bánh kẹo, đồ ăn nhanh cho <span class='kw'>đàn khỉ đuôi dài tại Lâm viên Cần Giờ</span> lại đi ngược với nguyên tắc bảo tồn?",
+                    opts: [
+                        "Làm khỉ lệ thuộc thức ăn nhân tạo, mất tập tính kiếm ăn tự nhiên và trở nên hung dữ.",
+                        "Làm đàn khỉ di cư toàn bộ sang các khu dân cư ở trung tâm thành phố để tìm thức ăn.",
+                        "Khiến các loài chim ăn quả trong rừng không còn nơi làm tổ trên các ngọn cây đước cao.",
+                        "Làm giảm khả năng bơi lội và lặn bắt cá của đàn khỉ trong mùa nước nổi hàng năm."
+                    ],
+                    ans: 0,
+                    wrongWhy: [
+                        "",
+                        "❌ SAI (B): Đàn khỉ không di cư vào trung tâm thành phố mà tụ tập ra đường nhựa trong rừng để giật đồ ăn của khách!",
+                        "❌ SAI (C): Việc cho khỉ ăn dưới mặt đất không làm mất chỗ làm tổ trên ngọn cây của chim!",
+                        "❌ SAI (D): Tác hại cốt lõi là làm biến đổi tập tính hoang dã và gây bệnh tiêu hóa do đồ ăn công nghiệp/túi nilon!"
+                    ],
+                    explain: "✅ ĐÁP ÁN A: Cho thú hoang ăn thức ăn chế biến sẵn làm chúng mắc bệnh, mất bản năng tự kiếm ăn trong rừng và tấn công du khách!"
+                },
+                {
+                    label: "Câu 3 (VN)", isEn: false, badge: "Nhận diện 'Tẩy Xanh'",
+                    q: "Hoạt động nào dưới đây là biểu hiện điển hình của hiện tượng <span class='kw'>'Tẩy xanh' (Greenwashing)</span> gây tổn hại cho hệ sinh thái Cần Giờ?",
+                    opts: [
+                        "Tổ chức tour chèo thuyền kayak không động cơ kết hợp vớt rác nhựa ven các rặng đước.",
+                        "Giới hạn số lượng khách tham quan mỗi ngày để không vượt quá sức chịu tải tự nhiên.",
+                        "Gắn mác tour chữa lành sinh thái nhưng chạy ca-nô tốc độ cao và bật loa lớn trong rừng.",
+                        "Khuyến khích du khách mang bình nước cá nhân và tiêu thụ sản phẩm thân thiện môi trường."
+                    ],
+                    ans: 2,
+                    wrongWhy: [
+                        "❌ SAI (A): Chèo kayak không động cơ và nhặt rác là du lịch sinh thái chân chính, rất đáng khuyến khích!",
+                        "❌ SAI (B): Giới hạn số lượng khách là biện pháp bảo tồn khoa học đúng chuẩn!",
+                        "",
+                        "❌ SAI (D): Giảm nhựa dùng một lần là hành động bảo vệ môi trường thực chất, không phải tẩy xanh!"
+                    ],
+                    explain: "✅ ĐÁP ÁN C: Mượn danh nghĩa 'sinh thái' để quảng cáo nhưng chạy ca-nô gây sóng sạt lở bờ bùn và bật loa làm chim bỏ tổ chính là Tẩy xanh!"
+                },
+                {
+                    label: "Câu 4 (VN)", isEn: false, badge: "Ô nhiễm Vi nhựa",
+                    q: "Các hạt <span class='kw'>vi nhựa (Microplastics)</span> phân rã từ rác thải nhựa trong bùn ngập mặn Cần Giờ đe dọa trực tiếp đến sức khỏe con người qua cơ chế nào?",
+                    opts: [
+                        "Bay hơi trực tiếp từ mặt bùn ngập mặn lên không khí và đi thẳng vào phổi người dân.",
+                        "Thấm qua mạch gỗ cây đước lên lá rồi phát tán theo phấn hoa vào nguồn nước ngọt.",
+                        "Tự phản ứng với muối biển tạo thành khí độc gây mưa axit trên toàn bộ vùng ven biển.",
+                        "Tích tụ sinh học trong các loài ăn lọc như hàu, nghêu, vọp rồi đi vào chuỗi thức ăn."
+                    ],
+                    ans: 3,
+                    wrongWhy: [
+                        "❌ SAI (A): Hạt vi nhựa là chất rắn polymer, không tự bốc hơi cùng hơi nước từ mặt bùn!",
+                        "❌ SAI (B): Hạt vi nhựa không đi theo phấn hoa cây đước vào nguồn nước ngọt!",
+                        "❌ SAI (C): Nhựa không phản ứng với muối biển để sinh ra khí gây mưa axit!",
+                        ""
+                    ],
+                    explain: "✅ ĐÁP ÁN D: Hàu, nghêu, vọp lọc nước lấy thức ăn nên tích tụ vi nhựa trong cơ thể; con người ăn hải sản sẽ nhận lại chính lượng vi nhựa đó!"
+                },
+                {
+                    label: "Câu 5 (VN)", isEn: false, badge: "Tác động Khai thác Cát",
+                    q: "Nạn <span class='kw'>khai thác cát trái phép</span> quá mức ở lòng sông và vùng cửa biển Cần Giờ gây ra hệ lụy vật lý trực tiếp nào đối với rừng ngập mặn?",
+                    opts: [
+                        "Làm hụt bùn cát, biến đổi dòng chảy và gây sạt lở cuốn trôi các dải rừng phòng hộ.",
+                        "Làm nước sông trở nên ngọt hoàn toàn khiến các loài cây ngập mặn không thể sinh trưởng.",
+                        "Tạo ra nhiều bãi bồi mới giúp cây mắm và cây bần mở rộng diện tích nhanh gấp đôi.",
+                        "Giúp dòng chảy lưu thông chậm lại và làm tăng lượng phù sa bồi đắp cho hệ rễ cây."
+                    ],
+                    ans: 0,
+                    wrongWhy: [
+                        "",
+                        "❌ SAI (B): Hút cát làm lòng sông sâu hơn khiến nước mặn từ biển lấn sâu vào hơn chứ không làm ngọt hóa!",
+                        "❌ SAI (C): Hút cát làm mất nguồn trầm tích nên xóa sổ bãi bồi chứ không tạo ra bãi bồi mới!",
+                        "❌ SAI (D): Khai thác cát làm dòng chảy xoáy mạnh hơn vào bờ gây sạt lở chứ không bồi đắp phù sa!"
+                    ],
+                    explain: "✅ ĐÁP ÁN A: Hút cát tạo các hố sâu dưới đáy sông làm mất chân đế tự nhiên, kéo sụp cả những vạt rừng phòng hộ ven bờ xuống lòng sông!"
+                },
+                {
+                    label: "Câu 6 (VN)", isEn: false, badge: "Sinh kế Cộng đồng Giữ rừng",
+                    q: "Động lực cốt lõi nào giúp mô hình <span class='kw'>'Giao khoán bảo vệ rừng cho các hộ gia đình'</span> tại Cần Giờ duy trì được hiệu quả bảo tồn suốt nhiều thập kỷ?",
+                    opts: [
+                        "Cấm tuyệt đối các hộ dân bước vào rừng và di dời toàn bộ họ vào trung tâm thành phố.",
+                        "Gắn kết trách nhiệm giữ rừng với quyền lợi sinh kế bền vững dưới tán rừng của hộ dân.",
+                        "Giao toàn bộ diện tích vùng lõi cho các hộ dân tự do khai thác gỗ đước để bán thương mại.",
+                        "Thay thế hoàn toàn lực lượng kiểm lâm chuyên nghiệp bằng các tình nguyện viên ngắn hạn."
+                    ],
+                    ans: 1,
+                    wrongWhy: [
+                        "❌ SAI (A): Các hộ nhận khoán sống ngay tại các chốt giữ rừng để canh gác chứ không phải bị cấm vào rừng!",
+                        "",
+                        "❌ SAI (C): Hộ nhận khoán có nhiệm vụ bảo vệ rừng nghiêm ngặt, tuyệt đối không được chặt gỗ vùng lõi đem bán!",
+                        "❌ SAI (D): Mô hình này là sự phối hợp giữa Kiểm lâm, Ban Quản lý và các hộ dân, không phải bỏ kiểm lâm!"
+                    ],
+                    explain: "✅ ĐÁP ÁN B: Khi người dân địa phương vừa có thu nhập từ tiền giữ rừng và sinh kế sinh thái, họ chính là những người bảo vệ rừng tận tâm nhất!"
+                },
+                {
+                    label: "Câu 7 (EN)", isEn: true, badge: "English | Carrying Capacity",
+                    vocab: "🔑 <b>Keywords:</b> <b>Carrying Capacity</b> (Sức chịu tải sinh thái) | <b>Soil compaction</b> (Nén chặt đất bùn) | <b>Sensitive habitats</b> (Sinh cảnh nhạy cảm).",
+                    q: "Why must conservation managers strictly enforce the <span class='kw'>'Carrying Capacity' (Sức chịu tải)</span> at eco-tourism sites in Can Gio?",
+                    opts: [
+                        "To ensure that entrance ticket prices remain expensive enough for luxury foreign travelers.",
+                        "To keep local fishing communities from interacting or sharing culture with visiting students.",
+                        "To prevent soil compaction, wildlife stress, and waste overload in sensitive habitats.",
+                        "To reduce the amount of oxygen consumed by visitors walking under the mangrove canopy."
+                    ],
+                    ans: 2,
+                    wrongWhy: [
+                        "❌ SAI (A): Kiểm soát sức chịu tải là vì mục tiêu bảo vệ sinh thái, không phải để độc quyền giá vé đắt đỏ!",
+                        "❌ SAI (B): Du lịch sinh thái luôn khuyến khích giao lưu văn hóa có trách nhiệm với cộng đồng bản địa!",
+                        "",
+                        "❌ SAI (D): Khách tham quan không làm hết oxy của rừng, mà chính sự giẫm đạp, tiếng ồn và rác thải mới làm hại rừng!"
+                    ],
+                    explain: "✅ ĐÁP ÁN C: Đón vượt quá sức chịu tải sẽ làm đất bùn bị giẫm nén chặt (làm hỏng rễ thở), động vật hoảng sợ và quá tải rác thải!"
+                },
+                {
+                    label: "Câu 8 (EN)", isEn: true, badge: "English | Invasive Species",
+                    vocab: "🔑 <b>Keywords:</b> <b>Non-native invasive species</b> (Loài ngoại lai xâm hại) | <b>Outcompete</b> (Cạnh tranh lấn át) | <b>Food web</b> (Lưới thức ăn).",
+                    q: "Why do ecologists strongly prohibit introducing <span class='kw'>non-native invasive species</span> into the Can Gio Mangrove Biosphere Reserve?",
+                    opts: [
+                        "Non-native species cannot survive more than two days in humid tropical weather conditions.",
+                        "Exotic plants always attract too many endangered birds from neighboring provinces.",
+                        "Foreign plants immediately turn the brackish river water into pure freshwater lakes.",
+                        "Invasive species can outcompete native mangroves and disrupt the fragile local food web."
+                    ],
+                    ans: 3,
+                    wrongWhy: [
+                        "❌ SAI (A): Nhiều loài ngoại lai xâm hại sống cực khỏe và lan tràn mất kiểm soát trong khí hậu nhiệt đới!",
+                        "❌ SAI (B): Loài xâm hại thường làm mất nơi ở của chim bản địa chứ không giúp bảo tồn chim quý hiếm!",
+                        "❌ SAI (C): Thực vật ngoại lai không thể biến nước lợ cửa biển thành hồ nước ngọt!",
+                        ""
+                    ],
+                    explain: "✅ ĐÁP ÁN D: Sinh vật ngoại lai xâm hại không có thiên địch tự nhiên sẽ lấn át cây bản địa (Đước, Bần, Mắm) và phá vỡ lưới thức ăn!"
+                },
+                {
+                    label: "Câu 9 (EN)", isEn: true, badge: "English | Oil Spill Risk",
+                    vocab: "🔑 <b>Keywords:</b> <b>Accidental oil spills</b> (Sự cố tràn dầu) | <b>Coat aerial roots</b> (Bám phủ kín rễ thở) | <b>Suffocate</b> (Làm ngạt thở).",
+                    q: "Why are mangrove ecosystems in Can Gio extremely vulnerable to <span class='kw'>accidental oil spills</span> along the Long Tau shipping river?",
+                    opts: [
+                        "Heavy oil coats the aerial roots, blocking gas exchange and suffocating the trees to death.",
+                        "Crude oil dissolves the wooden trunks instantly upon contact with brackish tidal water.",
+                        "Oil slicks reflect sunlight upward and burn the top canopy leaves within a few hours.",
+                        "Mangrove roots absorb crude oil as a nutrient and grow too fast to support their weight."
+                    ],
+                    ans: 0,
+                    wrongWhy: [
+                        "",
+                        "❌ SAI (B): Dầu thô không hòa tan hay làm tan chảy thân gỗ cứng ngay lập tức!",
+                        "❌ SAI (C): Váng dầu dưới mặt nước không đốt cháy tán lá trên cao bằng phản xạ ánh nắng!",
+                        "❌ SAI (D): Dầu mỏ là chất độc đối với thực vật chứ không phải chất dinh dưỡng giúp cây lớn nhanh!"
+                    ],
+                    explain: "✅ ĐÁP ÁN A: Khi dầu tràn theo thủy triều dâng lên sẽ bám đặc quánh vào các lỗ trao đổi khí trên rễ thở, làm cả vạt rừng chết ngạt!"
+                },
+                {
+                    label: "Câu 10 (EN)", isEn: true, badge: "English | Eco-Education Goal",
+                    vocab: "🔑 <b>Keywords:</b> <b>True measure</b> (Thước đo thực chất) | <b>Shift mindset</b> (Thay đổi tư duy) | <b>Concrete conservation habits</b> (Thói quen bảo tồn cụ thể).",
+                    q: "From an <span class='kw'>Environmental Education</span> perspective, what is the true measure of a successful student field trip to Can Gio?",
+                    opts: [
+                        "Students can recite the exact Latin names of fifty mangrove species from memory.",
+                        "Students shift their mindset and practice concrete conservation habits in daily life.",
+                        "Students take hundreds of selfies with wild monkeys to gain social media engagement.",
+                        "Students collect rare shells and mangrove propagules to bring home as souvenirs."
+                    ],
+                    ans: 1,
+                    wrongWhy: [
+                        "❌ SAI (A): Thuộc lòng tên khoa học mà không có ý thức bảo vệ thì mới dừng ở trí nhớ máy móc!",
+                        "",
+                        "❌ SAI (C): Tiếp cận quá gần để chụp ảnh selfie với khỉ hoang dã là hành vi tiềm ẩn rủi ro và gây nhiễu loạn!",
+                        "❌ SAI (D): Tự ý lấy mẫu vật, vỏ ốc, trụ mầm trong rừng mang về là vi phạm nguyên tắc thực địa sinh thái!"
+                    ],
+                    explain: "✅ ĐÁP ÁN B: Đích đến cao nhất của Giáo dục Môi trường là chuyển hóa nhận thức thành lối sống xanh và hành động bảo tồn mỗi ngày!"
+                }
+            ]
+        },
+
+        // VÒNG 3
+        {
+            roundName: "🔴 VÒNG CHUNG KẾT: TƯ DUY HỆ THỐNG & GIẢI PHÁP BẢO TỒN BỀN VỮNG",
+            nextStageIdx: 4,
+            nextStageLabel: "XEM TỔNG KẾT & TUYÊN TRUYỀN ➔",
+            questions: [
+                {
+                    label: "Câu 1 (VN)", isEn: false, badge: "Tư duy Hệ thống",
+                    q: "Vận dụng <span class='kw'>Tư duy Hệ thống</span>, điều gì sẽ xảy ra với <span class='kw'>trung tâm TP. Hồ Chí Minh</span> nếu 'bức tường xanh' Rừng ngập mặn Cần Giờ bị suy thoái nghiêm trọng?",
+                    opts: [
+                        "Chỉ các xã đảo ven biển bị ảnh hưởng, còn khu vực nội thành hoàn toàn đứng ngoài rủi ro.",
+                        "Gia tăng ngập lụt do triều cường, xâm nhập mặn sâu vào sông Sài Gòn và phát thải lớn Carbon.",
+                        "Nhiệt độ trung bình tại trung tâm thành phố sẽ giảm sâu nhờ gió biển thổi thẳng vào nội đô.",
+                        "Nguồn nước sông Sài Gòn sẽ tự động được làm sạch nhờ lưu lượng nước biển tràn vào mạnh hơn."
+                    ],
+                    ans: 1,
+                    wrongWhy: [
+                        "❌ SAI (A): Hệ sinh thái không có biên giới hành chính; mất tấm khiên cửa biển thì nội đô chịu tác động trực tiếp!",
+                        "",
+                        "❌ SAI (C): Mất 'lá phổi xanh' điều hòa vi khí hậu và phát thải thêm Carbon sẽ làm thành phố nóng lên chứ không mát đi!",
+                        "❌ SAI (D): Nước biển tràn sâu vào sông Sài Gòn gây nhiễm mặn nguồn nước sinh hoạt chứ không làm sạch nước!"
+                    ],
+                    explain: "✅ ĐÁP ÁN B: Mất rừng Cần Giờ sẽ kích hoạt chuỗi Domino: Sóng bão và triều cường đánh sâu vào đất liền, xâm nhập mặn và giải phóng hàng triệu tấn Carbon!"
+                },
+                {
+                    label: "Câu 2 (VN)", isEn: false, badge: "Tín chỉ Carbon Xanh",
+                    q: "Để nguồn thu từ <span class='kw'>'Tín chỉ Carbon xanh' (Blue Carbon Credits)</span> thực sự phục vụ mục tiêu bảo tồn Cần Giờ lâu dài, cần ưu tiên cơ chế phân bổ nào?",
+                    opts: [
+                        "Tái đầu tư cho các hộ dân giữ rừng, nghiên cứu phục hồi sinh cảnh và giáo dục cộng đồng.",
+                        "Dùng toàn bộ ngân sách để bê tông hóa các bờ kênh tự nhiên nằm sâu trong vùng lõi.",
+                        "Phân bổ hết nguồn quỹ cho các doanh nghiệp phát thải lớn ở nội thành mở rộng nhà máy.",
+                        "Khai thác trắng các diện tích rừng già lâu năm để lấy đất trồng mới nhằm tính lại tín chỉ."
+                    ],
+                    ans: 0,
+                    wrongWhy: [
+                        "",
+                        "❌ SAI (B): Bê tông hóa bờ kênh trong vùng lõi sẽ cắt đứt mạch thủy triều nuôi sống rừng ngập mặn!",
+                        "❌ SAI (C): Quỹ tín chỉ Carbon sinh ra để giảm phát thải và giữ rừng, không phải tài trợ mở rộng nhà máy gây ô nhiễm!",
+                        "❌ SAI (D): Chặt rừng già sẽ làm phát thải toàn bộ lượng Carbon khổng lồ tích tụ hàng trăm năm dưới lớp bùn!"
+                    ],
+                    explain: "✅ ĐÁP ÁN A: Nguồn tài chính từ Tín chỉ Carbon xanh phải quay lại nâng cao sinh kế cho người trực tiếp giữ rừng và phục hồi đa dạng sinh học!"
+                },
+                {
+                    label: "Câu 3 (VN)", isEn: false, badge: "Giáo dục Thay đổi Hành vi",
+                    q: "Giải pháp <span class='kw'>Giáo dục Môi trường</span> nào vừa nhân văn vừa bền vững nhất để chấm dứt tình trạng du khách xả rác nhựa và cho khỉ ăn tại Cần Giờ?",
+                    opts: [
+                        "Đóng cửa vĩnh viễn toàn bộ Khu dự trữ sinh quyển đối với học sinh, sinh viên và du khách.",
+                        "Chỉ đặt một tấm biển quy định chữ nhỏ tại bến phà mà không cần người hướng dẫn.",
+                        "Kiểm soát túi nhựa đầu vào kết hợp trạm trải nghiệm trực quan để du khách thấu cảm và tự giác.",
+                        "Bắt toàn bộ động vật hoang dã trong rừng đưa về nuôi nhốt tập trung trong các chuồng sắt."
+                    ],
+                    ans: 2,
+                    wrongWhy: [
+                        "❌ SAI (A): Đóng cửa vĩnh viễn sẽ đánh mất chức năng giáo dục sinh thái và sinh kế cộng đồng của Khu dự trữ sinh quyển!",
+                        "❌ SAI (B): Một tấm biển chữ nhỏ ở xa không đủ sức tạo ra sự thấu cảm và thay đổi thói quen của du khách!",
+                        "",
+                        "❌ SAI (D): Bắt thú hoang dã nhốt vào chuồng sắt là phá hủy bản chất của khu bảo tồn thiên nhiên!"
+                    ],
+                    explain: "✅ ĐÁP ÁN C: Kết hợp kiểm soát nhựa từ cổng vào với giáo dục trực quan giúp du khách hiểu 'vì sao phải bảo vệ', từ đó tự nguyện hành động!"
+                },
+                {
+                    label: "Câu 4 (VN)", isEn: false, badge: "Thích ứng Biến đổi Khí hậu",
+                    q: "Trước kịch bản <span class='kw'>mực nước biển dâng cao</span> do biến đổi khí hậu, giải pháp sinh thái nào giúp rừng ngập mặn Cần Giờ duy trì khả năng sinh tồn?",
+                    opts: [
+                        "Xây tường bê tông kín cao năm mét bao quanh toàn bộ ranh giới giữa rừng và biển.",
+                        "Bơm hóa chất làm đông cứng toàn bộ lớp bùn đáy sông để ngăn sóng biển đánh vào gốc.",
+                        "Chặt bỏ các loài cây ngập mặn hiện hữu để trồng thay thế bằng các loài cây gỗ trên cạn.",
+                        "Duy trì nguồn phù sa bồi tụ tự nhiên và bảo vệ quỹ đất vùng đệm để rừng thích nghi dần."
+                    ],
+                    ans: 3,
+                    wrongWhy: [
+                        "❌ SAI (A): Tường bê tông chặn kín biển sẽ cắt đứt dòng thủy triều và phù sa, làm rừng ngập mặn chết khô!",
+                        "❌ SAI (B): Đông cứng bùn bằng hóa chất sẽ giết chết toàn bộ hệ rễ thở và sinh vật đáy!",
+                        "❌ SAI (C): Cây gỗ trên cạn không thể chịu được ngập mặn khi nước biển dâng!",
+                        ""
+                    ],
+                    explain: "✅ ĐÁP ÁN D: Khi có đủ phù sa bồi đắp tự nhiên, hệ rễ đước sẽ giữ bùn lại để tự nâng cao dần nền đáy rừng theo kịp tốc độ nước biển dâng!"
+                },
+                {
+                    label: "Câu 5 (VN)", isEn: false, badge: "Kinh tế Xanh Bền vững",
+                    q: "Định hướng phát triển kinh tế nào tại <span class='kw'>Vùng chuyển tiếp và Vùng đệm</span> của Cần Giờ hài hòa nhất với mục tiêu bảo tồn Khu dự trữ sinh quyển?",
+                    opts: [
+                        "Phát triển nuôi trồng thủy sản sinh thái dưới tán rừng kết hợp du lịch giáo dục giảm nhựa.",
+                        "Quy hoạch các khu công nghiệp dệt nhuộm và chế biến hóa chất dọc theo các nhánh sông.",
+                        "Khai thác tối đa nguồn gỗ đước tự nhiên để làm nguyên liệu đốt lò cho các xưởng gạch.",
+                        "San lấp toàn bộ các bãi bồi ven biển để xây dựng các bãi đỗ xe và kho chứa hàng hóa."
+                    ],
+                    ans: 0,
+                    wrongWhy: [
+                        "",
+                        "❌ SAI (B): Nước thải dệt nhuộm và hóa chất sẽ đầu độc trực tiếp hệ sinh thái ngập mặn!",
+                        "❌ SAI (C): Khai thác gỗ đước tự nhiên để đốt lò sẽ tàn phá rừng phòng hộ và phát thải khí nhà kính!",
+                        "❌ SAI (D): San lấp bãi bồi sẽ xóa sổ nơi sinh sản của thủy sản và không gian tái sinh tự nhiên của cây mắm, cây bần!"
+                    ],
+                    explain: "✅ ĐÁP ÁN A: Mô hình thủy sản sinh thái dưới tán rừng (tôm - rừng, hàu - rừng) và du lịch giáo dục giúp người dân làm giàu bền vững nhờ giữ rừng!"
+                },
+                {
+                    label: "Câu 6 (VN)", isEn: false, badge: "Hành động Sinh viên",
+                    q: "Hành động nào của mỗi sinh viên sau chương trình hôm nay đóng góp <span class='kw'>thiết thực và trực tiếp nhất</span> cho công cuộc bảo tồn Rừng ngập mặn Cần Giờ?",
+                    opts: [
+                        "Chỉ dừng lại ở việc học thuộc lòng các số liệu diện tích rừng để lấy điểm cao trong kỳ thi.",
+                        "Thực hành giảm rác nhựa tại thành phố, đi thực địa văn minh và lan tỏa ý thức bảo tồn.",
+                        "Tự ý mua các giống cây lạ không rõ nguồn gốc mang xuống trồng xen vào vùng lõi rừng.",
+                        "Kêu gọi ngừng toàn bộ các hoạt động nghiên cứu khoa học và khảo sát thực tế tại Cần Giờ."
+                    ],
+                    ans: 1,
+                    wrongWhy: [
+                        "❌ SAI (A): Chỉ học thuộc số liệu mà không hành động thì không tạo ra tác động tích cực nào cho môi trường!",
+                        "",
+                        "❌ SAI (C): Tự ý trồng cây lạ không qua kiểm dịch lâm sinh có nguy cơ đưa loài ngoại lai xâm hại hoặc mầm bệnh vào rừng!",
+                        "❌ SAI (D): Nghiên cứu khoa học là nền tảng không thể thiếu để theo dõi sức khỏe và bảo vệ rừng Cần Giờ!"
+                    ],
+                    explain: "✅ ĐÁP ÁN B: Bớt một rác nhựa ở TP.HCM, đi du lịch có trách nhiệm và lan tỏa thông điệp #RexanhCanGio chính là đóng góp thiết thực nhất!"
+                },
+                {
+                    label: "Câu 7 (EN)", isEn: true, badge: "English | Nature-based Solutions",
+                    vocab: "🔑 <b>Keywords:</b> <b>Nature-based Solutions - NbS</b> (Giải pháp thuận tự nhiên) | <b>Climate resilience</b> (Khả năng chống chịu khí hậu) | <b>Harness</b> (Phát huy).",
+                    q: "Why is conserving Can Gio mangroves recognized globally as a premier <span class='kw'>'Nature-based Solution' (NbS)</span> for climate resilience?",
+                    opts: [
+                        "It replaces all natural tidal creeks with artificial concrete canals to drain water faster.",
+                        "It relies on imported mechanical air filters installed across the coastal highway system.",
+                        "It harnesses healthy natural ecosystems to protect the coast, store carbon, and support livelihoods.",
+                        "It eliminates the need for any environmental laws or waste management in the city center."
+                    ],
+                    ans: 2,
+                    wrongWhy: [
+                        "❌ SAI (A): Thay kênh tự nhiên bằng kênh bê tông là can thiệp công trình cứng, trái ngược hoàn toàn với NbS!",
+                        "❌ SAI (B): Lắp máy lọc cơ khí nhân tạo là giải pháp công nghệ công nghiệp chứ không phải dựa vào tự nhiên!",
+                        "",
+                        "❌ SAI (D): Bảo tồn rừng luôn phải đi đôi với luật bảo vệ môi trường và quản lý rác thải đô thị!"
+                    ],
+                    explain: "✅ ĐÁP ÁN C: Giải pháp thuận tự nhiên (NbS) dựa vào sức mạnh của chính hệ sinh thái rừng ngập mặn để vừa chắn bão, vừa hút Carbon và nuôi sống cộng đồng!"
+                },
+                {
+                    label: "Câu 8 (EN)", isEn: true, badge: "English | Source-to-Sea Link",
+                    vocab: "🔑 <b>Keywords:</b> <b>Single-use plastic</b> (Nhựa dùng 1 lần) | <b>River-borne plastic waste</b> (Rác nhựa trôi theo sông) | <b>Downstream</b> (Xuôi về hạ lưu).",
+                    q: "How does <span class='kw'>reducing single-use plastic</span> by university students in central Ho Chi Minh City directly protect Can Gio mangroves?",
+                    opts: [
+                        "It reduces the volume of river-borne plastic waste flowing downstream that suffocates mangrove roots.",
+                        "It increases the salinity of the Saigon River so mangrove trees can grow taller in winter.",
+                        "It prevents ocean tides from entering the Nha Be and Long Tau river channels every afternoon.",
+                        "It forces migratory birds to relocate their nests from the mangrove forest to city parks."
+                    ],
+                    ans: 0,
+                    wrongWhy: [
+                        "",
+                        "❌ SAI (B): Giảm dùng nhựa ở thành phố không làm tăng độ mặn của sông Sài Gòn!",
+                        "❌ SAI (C): Thủy triều lên xuống là do lực hấp dẫn của Mặt Trăng và Mặt Trời, không liên quan đến nhựa!",
+                        "❌ SAI (D): Mục tiêu của chúng ta là giữ yên bình cho chim di cư ở lại rừng Cần Giờ chứ không phải đuổi chim về công viên!"
+                    ],
+                    explain: "✅ ĐÁP ÁN A: Theo quy luật 'Từ nguồn ra biển' (Source-to-Sea), giảm nhựa ở nội đô giúp chặn đứng nguồn rác trôi theo sông Sài Gòn về bóp nghẹt rễ đước Cần Giờ!"
+                },
+                {
+                    label: "Câu 9 (EN)", isEn: true, badge: "English | Co-Management",
+                    vocab: "🔑 <b>Keywords:</b> <b>Empowering local households</b> (Trao quyền cho hộ dân địa phương) | <b>Dedicated guardians</b> (Người canh giữ tận tụy) | <b>Align with</b> (Gắn liền với).",
+                    q: "Why is <span class='kw'>empowering local forest-guarding households</span> essential for the long-term survival of Can Gio Biosphere Reserve?",
+                    opts: [
+                        "Local residents can replace scientific researchers in writing international climate treaties.",
+                        "Communities living by the forest become its most dedicated guardians when livelihoods align with conservation.",
+                        "Empowering locals allows unrestricted timber harvesting inside the strictly protected Core Zone.",
+                        "It transfers all financial costs of coastal dike construction onto small fishing households."
+                    ],
+                    ans: 1,
+                    wrongWhy: [
+                        "❌ SAI (A): Người dân phối hợp cung cấp tri thức bản địa chứ không thay thế nhà khoa học viết hiệp ước quốc tế!",
+                        "",
+                        "❌ SAI (C): Đồng quản lý là để giữ rừng nghiêm ngặt chứ tuyệt đối không được khai thác gỗ tự do ở Vùng lõi!",
+                        "❌ SAI (D): Trao quyền là mang lại nguồn thu bền vững cho dân chứ không phải bắt hộ nghèo gánh chi phí xây đê!"
+                    ],
+                    explain: "✅ ĐÁP ÁN B: Không ai hiểu và canh giữ từng con rạch ở Cần Giờ tốt hơn chính các hộ dân sống dưới tán rừng khi sinh kế của họ gắn liền với rừng!"
+                },
+                {
+                    label: "Câu 10 (EN)", isEn: true, badge: "English | Conservation Message",
+                    vocab: "🔑 <b>Keywords:</b> <b>Conservation philosophy</b> (Triết lý bảo tồn) | <b>Safeguarding</b> (Bảo vệ, giữ gìn) | <b>Ecological breath</b> (Hơi thở sinh thái).",
+                    q: "What core <span class='kw'>conservation philosophy</span> should every student carry forward from our Can Gio educational journey today?",
+                    opts: [
+                        "Forest conservation is solely the duty of park rangers and environmental ministry officials.",
+                        "Short-term economic profit must always take priority over the survival of coastal wetlands.",
+                        "Natural resources in Can Gio are infinite and can recover instantly from any pollution.",
+                        "Protecting Can Gio today is safeguarding the ecological breath and future of our own city."
+                    ],
+                    ans: 3,
+                    wrongWhy: [
+                        "❌ SAI (A): Bảo vệ môi trường là trách nhiệm của mỗi công dân chứ không phải việc riêng của kiểm lâm!",
+                        "❌ SAI (B): Đánh đổi vùng đất ngập nước ven biển lấy lợi nhuận ngắn hạn sẽ trả giá đắt bằng thiên tai và biến đổi khí hậu!",
+                        "❌ SAI (C): Tài nguyên thiên nhiên là hữu hạn và rất dễ tổn thương nếu vượt ngưỡng chịu tải!",
+                        ""
+                    ],
+                    explain: "✅ ĐÁP ÁN D: Bảo vệ rừng ngập mặn Cần Giờ không phải là giúp một vùng đất xa xôi, mà chính là giữ gìn hơi thở và tương lai của TP.HCM!"
+                }
+            ]
+        }
+    ];
+
+    const currentQIndex = [0, 0, 0];
+    const answeredStatus = [
+        new Array(10).fill(false),
+        new Array(10).fill(false),
+        new Array(10).fill(false)
+    ];
+
+    function renderRoundArena(roundIdx) {
+        const rData = roundsDatabase[roundIdx];
+        const qIdx = currentQIndex[roundIdx];
+        const qItem = rData.questions[qIdx];
+        const container = document.getElementById('arena-round-' + roundIdx);
+        const letters = ['A', 'B', 'C', 'D'];
+
+        let pillsHtml = '';
+        for (let i = 0; i < rData.questions.length; i++) {
+            const activeClass = (i === qIdx) ? 'active' : '';
+            const doneClass = answeredStatus[roundIdx][i] ? 'done' : '';
+            const enClass = rData.questions[i].isEn ? 'en-pill' : '';
+            const checkMark = answeredStatus[roundIdx][i] ? '✓ ' : '';
+            pillsHtml += '<button type="button" class="q-pill-btn ' + enClass + ' ' + activeClass + ' ' + doneClass + '" onclick="selectQuestionInRound(' + roundIdx + ', ' + i + ')">' + checkMark + rData.questions[i].label + '</button>';
+        }
+
+        let vocabHtml = '';
+        if (qItem.isEn && qItem.vocab) {
+            vocabHtml = '<div class="vocab-strip">' + qItem.vocab + '</div>';
+        }
+
+        let optsHtml = '';
+        for (let oIdx = 0; oIdx < qItem.opts.length; oIdx++) {
+            optsHtml += '<button type="button" class="ans-card" onclick="handlePickAnswer(' + roundIdx + ', ' + qIdx + ', ' + oIdx + ', ' + qItem.ans + ', this)">' +
+                '<span class="ans-char">' + letters[oIdx] + '</span>' +
+                '<span>' + qItem.opts[oIdx] + '</span>' +
+                '</button>';
+        }
+
+        let nextQBtnHtml = '';
+        if (qIdx < rData.questions.length - 1) {
+            nextQBtnHtml = '<button type="button" class="btn-next-q" onclick="selectQuestionInRound(' + roundIdx + ', ' + (qIdx + 1) + ')">CÂU KẾ TIẾP (' + rData.questions[qIdx + 1].label + ') ➔</button>';
+        }
+
+        container.innerHTML =
+            '<div class="question-selector-bar">' +
+                '<div class="bar-top-row">' +
+                    '<span class="round-title-tag">' + rData.roundName + '</span>' +
+                    '<span style="font-size:0.84rem; color:#b9f6ca;">(Câu 1–6: Tiếng Việt Tư duy | Câu 7–10: Tiếng Anh Kèm Từ Vựng)</span>' +
+                '</div>' +
+                '<div class="q-pills">' + pillsHtml + '</div>' +
+            '</div>' +
+            '<div class="q-box-main">' +
+                '<div class="q-meta">' +
+                    '<span class="q-badge-type">📌 ' + qItem.badge + '</span>' +
+                    '<span style="font-size:0.86rem; color:#ffe57f;">Đang mở: <b>' + qItem.label + ' / 10</b></span>' +
+                '</div>' +
+                '<div class="q-text">' + qItem.q + '</div>' +
+                vocabHtml +
+            '</div>' +
+            '<div class="ans-grid">' + optsHtml + '</div>' +
+            '<div class="wrong-feedback-bar" id="wrong-fb-' + roundIdx + '-' + qIdx + '"></div>' +
+            '<div class="explain-bar" id="exp-' + roundIdx + '-' + qIdx + '">' +
+                '<div class="explain-text">' + qItem.explain + '</div>' +
+                '<div class="explain-actions">' +
+                    nextQBtnHtml +
+                    '<button type="button" class="btn-next-stage" onclick="goToStage(' + rData.nextStageIdx + ')">' + rData.nextStageLabel + '</button>' +
+                '</div>' +
+            '</div>';
+    }
+
+    function selectQuestionInRound(roundIdx, qIdx) {
+        currentQIndex[roundIdx] = qIdx;
+        renderRoundArena(roundIdx);
+        soundClick();
+    }
+
+    function handlePickAnswer(roundIdx, qIdx, pickedIdx, correctIdx, btnEl) {
+        const qItem = roundsDatabase[roundIdx].questions[qIdx];
+        const wrongBox = document.getElementById('wrong-fb-' + roundIdx + '-' + qIdx);
+        const expEl = document.getElementById('exp-' + roundIdx + '-' + qIdx);
+
+        if (pickedIdx === correctIdx) {
+            btnEl.classList.add('correct');
+            answeredStatus[roundIdx][qIdx] = true;
+            if (wrongBox) wrongBox.classList.remove('show');
+            if (expEl) expEl.classList.add('show');
+            soundCorrect();
+        } else {
+            btnEl.classList.add('wrong');
+            if (wrongBox && qItem.wrongWhy && qItem.wrongWhy[pickedIdx]) {
+                wrongBox.innerHTML = '<b>PHẢN BIỆN VÌ SAO CHỌN SAI:</b> ' + qItem.wrongWhy[pickedIdx] + ' <i>(Mời đội khác cướp quyền hoặc chọn lại!)</i>';
+                wrongBox.classList.add('show');
+            }
+            soundWrong();
+        }
+    }
+
+    renderRoundArena(0);
+    renderRoundArena(1);
+    renderRoundArena(2);
+
+    function goToStage(stageIdx) {
+        const screens = document.querySelectorAll('.screen');
+        const tabs = document.querySelectorAll('.tab-btn');
+        for (let i = 0; i < screens.length; i++) {
+            if (i === stageIdx) screens[i].classList.add('active');
+            else screens[i].classList.remove('active');
+        }
+        for (let j = 0; j < tabs.length; j++) {
+            if (j === stageIdx) tabs[j].classList.add('active');
+            else tabs[j].classList.remove('active');
+        }
+        soundClick();
+    }
+
+    let tInterval = null;
+    function triggerTimer(seconds) {
+        clearInterval(tInterval);
+        const bubble = document.getElementById('timer-bubble');
+        let s = seconds;
+        bubble.style.display = 'flex';
+        bubble.textContent = s;
+        playSynth(750, 'sine', 0.1, 0);
+
+        tInterval = setInterval(function() {
+            s--;
+            if (s > 0) {
+                bubble.textContent = s;
+                playSynth(750, 'sine', 0.1, 0);
+            } else if (s === 0) {
+                bubble.textContent = "HẾT!";
+                soundWrong();
+            } else {
+                clearInterval(tInterval);
+                bubble.style.display = 'none';
+            }
+        }, 1000);
+    }
+
+    function goFullScreen() {
+        try {
+            if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+            else document.exitFullscreen();
+        } catch (e) {}
+    }
+</script>
+
+</body>
+</html>
